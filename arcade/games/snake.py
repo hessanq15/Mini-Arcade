@@ -14,6 +14,8 @@ class Snake:
         self.score = 0
         self.score_font = pygame.font.Font(None, 36)
         self.food = self.spawn_food()
+        self.game_over = False
+        self.game_over_font = pygame.font.Font(None, 64)
 
 
     
@@ -36,6 +38,12 @@ class Snake:
 
 
     def handle_input(self, action):
+
+        if self.game_over:
+            if action == "SELECT":
+                self.__init__()
+                return
+            
         directions = {
             "UP": (0, -1),
             "DOWN": (0, 1),
@@ -53,6 +61,10 @@ class Snake:
                 self.next_direction = new_direction
 
     def update(self):
+
+        if self.game_over:
+            return
+        
         now = pygame.time.get_ticks()
 
         if now - self.last_move < self.move_delay:
@@ -65,6 +77,28 @@ class Snake:
         dx, dy = self.direction
 
         new_head = (head_x + dx, head_y + dy)
+
+        
+        columns = 800 // self.cell_size
+        rows = 600 // self.cell_size
+
+        x, y = new_head
+
+        if x < 0 or x >= columns or y < 0 or y >= rows:
+            self.game_over = True
+            return
+
+        growing = new_head == self.food
+
+        if growing:
+            body = self.snake
+        else:
+            body = self.snake[:-1]
+
+        if new_head in body:
+            self.game_over = True
+            return
+
 
         
         self.snake.insert(0, new_head)
@@ -114,4 +148,27 @@ class Snake:
         )
 
         screen.blit(score_text, (20, 20))
+
+        
+        if self.game_over:
+            overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+            overlay.fill((15, 15, 30, 190))
+            screen.blit(overlay, (0, 0))
+
+            title = self.game_over_font.render(
+                "GAME OVER", True, (255, 180, 210)
+            )
+
+            message = self.score_font.render(
+                f"Final score: {self.score}", True, (255, 255, 255)
+            )
+
+            restart = self.score_font.render(
+                "Press Enter to play again", True, (220, 220, 235)
+            )
+
+            screen.blit(title, title.get_rect(center=(400, 230)))
+            screen.blit(message, message.get_rect(center=(400, 300)))
+            screen.blit(restart, restart.get_rect(center=(400, 360)))
+
 
