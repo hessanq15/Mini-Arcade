@@ -1,6 +1,7 @@
 
 import pygame
 import random
+from arcade.score_manager import ScoreManager
 
 
 class Snake:
@@ -16,6 +17,8 @@ class Snake:
         self.food = self.spawn_food()
         self.game_over = False
         self.game_over_font = pygame.font.Font(None, 64)
+        self.score_manager = ScoreManager()
+        self.high_score = self.score_manager.get_high_score("Snake")
 
 
     
@@ -86,6 +89,8 @@ class Snake:
 
         if x < 0 or x >= columns or y < 0 or y >= rows:
             self.game_over = True
+            self.score_manager.save_score("Snake", self.score)
+            self.high_score = self.score_manager.get_high_score("Snake")
             return
 
         growing = new_head == self.food
@@ -97,6 +102,8 @@ class Snake:
 
         if new_head in body:
             self.game_over = True
+            self.score_manager.save_score("Snake", self.score)
+            self.high_score = self.score_manager.get_high_score("Snake")
             return
 
 
@@ -148,6 +155,13 @@ class Snake:
         )
 
         screen.blit(score_text, (20, 20))
+        
+        high_score_text = self.score_font.render(
+            f"Best: {self.high_score}", True, (255, 255, 255)
+        )
+
+        screen.blit(high_score_text, (20, 55))
+
 
         
         if self.game_over:
