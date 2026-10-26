@@ -1,8 +1,9 @@
-
 import pygame
+from arcade.games.snake import Snake
 
 from arcade.menu import ArcadeMenu
 from arcade.input_manager import InputManager
+
 
 
 def main():
@@ -15,6 +16,7 @@ def main():
     menu = ArcadeMenu()
     input_manager = InputManager()
 
+    current_game = None
     running = True
 
     while running:
@@ -24,15 +26,28 @@ def main():
                 continue
 
             action = input_manager.get_action(event)
-            selection = menu.handle_input(action)
 
-            if selection == "Quit":
-                running = False
+            if current_game is None:
+                selection = menu.handle_input(action)
 
-            elif selection is not None:
-                print(f"Selected game: {selection}")
+                if selection == "Quit":
+                    running = False
+                elif selection == "Snake":
+                    current_game = Snake()
+                elif selection is not None:
+                    print(f"Selected game: {selection}")
 
-        menu.draw(screen)
+            else:
+                if action == "BACK":
+                    current_game = None
+                else:
+                    current_game.handle_input(action)
+
+        if current_game is None:
+            menu.draw(screen)
+        else:
+            current_game.update()
+            current_game.draw(screen)
 
         pygame.display.flip()
         clock.tick(60)
