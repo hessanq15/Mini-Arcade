@@ -1,9 +1,10 @@
-import pygame
-from arcade.games.snake import Snake
 
+import pygame
+
+from arcade.games.snake import Snake
+from arcade.games.space_defender import SpaceDefender
 from arcade.menu import ArcadeMenu
 from arcade.input_manager import InputManager
-
 
 
 def main():
@@ -34,13 +35,25 @@ def main():
                     running = False
                 elif selection == "Snake":
                     current_game = Snake()
+                elif selection == "Space Defender":
+                    current_game = SpaceDefender()
                 elif selection is not None:
                     print(f"Selected game: {selection}")
 
             else:
                 if action == "BACK":
                     current_game = None
-                else:
+
+                elif isinstance(current_game, SpaceDefender):
+                    if action is not None:
+                        current_game.handle_input(action)
+
+                    released = input_manager.get_release(event)
+
+                    if released is not None:
+                        current_game.handle_input(released, False)
+
+                elif action is not None:
                     current_game.handle_input(action)
 
         if current_game is None:

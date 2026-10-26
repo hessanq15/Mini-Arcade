@@ -18,3 +18,9 @@ class InputManager:
             return None
 
         return self.key_bindings.get(event.key, None)
+
+    def get_release(self, event):
+        if event.type != pygame.KEYUP:
+            return None
+
+        return self.key_bindings.get(event.key)
