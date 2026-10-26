@@ -16,27 +16,26 @@ class ArcadeMenu:
         self.option_font = pygame.font.Font(None, 42)
         self.subtitle_font = pygame.font.Font(None, 26)
 
-    def handle_input(self, event):
-        if event.type != pygame.KEYDOWN:
-            return None
-
-        if event.key == pygame.K_UP:
+    
+    def handle_input(self, action):
+        if action == "UP":
             self.selected_index = (
                 self.selected_index - 1
             ) % len(self.options)
 
-        elif event.key == pygame.K_DOWN:
+        elif action == "DOWN":
             self.selected_index = (
                 self.selected_index + 1
             ) % len(self.options)
 
-        elif event.key == pygame.K_RETURN:
+        elif action == "SELECT":
             return self.options[self.selected_index]
 
-        elif event.key == pygame.K_ESCAPE:
+        elif action == "BACK":
             return "Quit"
 
         return None
+
 
     def draw(self, screen):
         screen.fill((25, 25, 45))

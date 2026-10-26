@@ -2,6 +2,7 @@
 import pygame
 
 from arcade.menu import ArcadeMenu
+from arcade.input_manager import InputManager
 
 
 def main():
@@ -12,6 +13,7 @@ def main():
 
     clock = pygame.time.Clock()
     menu = ArcadeMenu()
+    input_manager = InputManager()
 
     running = True
 
@@ -19,15 +21,16 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                continue
 
-            else:
-                selection = menu.handle_input(event)
+            action = input_manager.get_action(event)
+            selection = menu.handle_input(action)
 
-                if selection == "Quit":
-                    running = False
+            if selection == "Quit":
+                running = False
 
-                elif selection is not None:
-                    print(f"Selected game: {selection}")
+            elif selection is not None:
+                print(f"Selected game: {selection}")
 
         menu.draw(screen)
 
