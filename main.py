@@ -1,14 +1,18 @@
 
 import pygame
 
+from arcade.menu import ArcadeMenu
+
 
 def main():
     pygame.init()
 
-    screen = pygame.display.set_mode((700, 600))
+    screen = pygame.display.set_mode((800, 600))
     pygame.display.set_caption("Mini Arcade")
 
     clock = pygame.time.Clock()
+    menu = ArcadeMenu()
+
     running = True
 
     while running:
@@ -16,7 +20,16 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-        screen.fill((25, 25, 45))
+            else:
+                selection = menu.handle_input(event)
+
+                if selection == "Quit":
+                    running = False
+
+                elif selection is not None:
+                    print(f"Selected game: {selection}")
+
+        menu.draw(screen)
 
         pygame.display.flip()
         clock.tick(60)
